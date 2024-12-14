@@ -1,14 +1,20 @@
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include "./link.h"
 
-Link link_create(size_t item_size) {
-    return (Link) {
-        .item_size = item_size,
-        .head = NULL,
-        .tail = NULL,
-    };
+Link *link_create(size_t item_size) {
+    Link *link = malloc(sizeof(Link));
+
+    if (link == NULL) {
+        perror("Out of memory");
+        exit(EXIT_FAILURE);
+    }
+
+    link->head = NULL;
+    link->tail = NULL;
+    link->item_size = item_size;
+
+    return link;
 }
 
 static LinkNode *link_node_create(Link *link, void *value) {
@@ -53,8 +59,6 @@ void link_prepend_node(Link *link, void *value) {
 }
 
 void link_pop_node(Link *link, size_t index, void *value) {
-    assert(index >= 0 && "link_delete_node: index should be >= 0");
-
     if (link->head == NULL) {
         return;
     }
@@ -97,5 +101,12 @@ void link_delete_node(Link *link, size_t index) {
 
 
 void link_destroy(Link *link) {
-    // Iterate over items and free memory
+    LinkNode *head = link->head;
+
+    while (head) {
+        LinkNode *next = head->next;
+        free(head);
+
+        head = next;
+    }
 }

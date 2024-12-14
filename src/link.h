@@ -14,7 +14,7 @@ typedef struct Link {
     size_t item_size;
 } Link;
 
-Link link_create(size_t item_size);
+Link *link_create(size_t item_size);
 
 void link_append_node(Link *link, void *value);
 void link_prepend_node(Link *link, void *value);
