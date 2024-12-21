@@ -1,24 +1,16 @@
 #include <stdio.h>
-#include "./link.h"
+#include "mash.h"
 
 
 int main() {
-    Link *link = link_create(sizeof(int));
 
-    link_append_node(link, &(int[]){5});
-    link_append_node(link, &(int[]){4});
-    link_append_node(link, &(int[]){3});
-    link_append_node(link, &(int[]){2});
+    Mash *hash = mash_create(sizeof(int));
+    mash_set(hash, "hello", (int []) {5});
+    mash_set(hash, "world", (int []) {12});
 
-    int output;
-    link_pop_node(link, 0, &output);
-    link_pop_node(link, 0, &output);
-    link_pop_node(link, 0, &output);
-    link_pop_node(link, 0, &output);
-    link_pop_node(link, 0, &output);
-    link_pop_node(link, 0, &output);
-    
-    printf("%p", link->tail);
+    int *value = mash_get(hash, "world");
+
+    printf("Value = %d", *value);
 
     return 0;
 }

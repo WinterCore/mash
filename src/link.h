@@ -23,5 +23,11 @@ void link_pop_node(Link *link, size_t index, void *value);
 void link_delete_node(Link *link, size_t index);
 void link_destroy(Link *link);
 
+typedef struct LinkIterator {
+    LinkNode *current;
+} LinkIterator;
+
+LinkIterator link_iterator_create(Link *link);
+void *link_iterator_next(LinkIterator *link_iterator);
 
 #endif

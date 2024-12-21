@@ -110,3 +110,15 @@ void link_destroy(Link *link) {
         head = next;
     }
 }
+
+LinkIterator link_iterator_create(Link *link) {
+    return (LinkIterator) { .current = link->head };
+}
+
+void *link_iterator_next(LinkIterator *link_iterator) {
+    void *value = link_iterator->current->value;
+
+    link_iterator->current = link_iterator->current->next;
+
+    return value;
+}

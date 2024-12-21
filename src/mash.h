@@ -19,6 +19,7 @@ typedef struct MashElement {
 
 Mash *mash_create(size_t elem_size);
 
-Mash *mash_set(Mash *mash, char *key, void *value);
+void mash_set(Mash *mash, char *key, void *value);
+void *mash_get(Mash *mash, char *key);
 
 #endif
