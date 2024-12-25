@@ -20,6 +20,25 @@ unsigned long djb2_hash(const char *str) {
     return hash;
 }
 
+int find_bucket_elem_index(Link *bucket, char *key) {
+    int i = 0;
+
+    LinkIterator iterator = link_iterator_create(bucket);
+    MashElement **elem;
+    
+    while ((elem = link_iterator_next(&iterator)) != NULL) {
+        // TODO: Find a way to get rid of the the derefence
+        if (strcmp((*elem)->key, key) == 0) {
+            return i;
+        }
+
+        i += 1;
+    }
+
+    return -1;
+}
+
+
 Mash *mash_create(size_t elem_size) {
     Mash *map = malloc(
         sizeof(Mash) +
@@ -64,15 +83,25 @@ void mash_set(Mash *mash, char *key, void *value) {
     
     size_t index = djb2_hash(key) % mash->buckets_count;
 
-    Link *link = mash->buckets[index];
+    Link *bucket = mash->buckets[index];
 
-    if (link == NULL) {
-        link = link_create(sizeof(MashElement));
-        mash->buckets[index] = link;
+    if (bucket == NULL) {
+        bucket = link_create(sizeof(MashElement *));
+        mash->buckets[index] = bucket;
     }
 
-    // TODO: Check if key already exists
-    link_append_node(link, elem);
+    int existing_elem_idx = find_bucket_elem_index(bucket, key);
+
+    if (existing_elem_idx > -1) {
+        // Key already exists
+        LinkNode *node = link_get_node(bucket, existing_elem_idx);
+        free(*(void **) node->value);
+        link_set_node_value(bucket, node, &elem);
+
+        return;
+    }
+
+    link_append_node(bucket, &elem);
 }
 
 void *mash_get(Mash *mash, char *key) {
@@ -86,16 +115,16 @@ void *mash_get(Mash *mash, char *key) {
     
     LinkIterator iterator = link_iterator_create(bucket);
 
-    MashElement *elem;
+    MashElement **elem;
     
     while ((elem = link_iterator_next(&iterator)) != NULL) {
-        if (strcmp(elem->key, key) == 0) {
+        if (strcmp((*elem)->key, key) == 0) {
             break;
         }
     }
 
     if (elem != NULL) {
-        return elem->value;
+        return (*elem)->value;
     }
 
     return NULL;

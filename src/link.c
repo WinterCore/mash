@@ -58,6 +58,17 @@ void link_prepend_node(Link *link, void *value) {
     link->head = new_node;
 }
 
+LinkNode *link_get_node(Link *link, size_t index) {
+    LinkNode *head = link->head;
+
+    while (head != NULL && index > 0) {
+        index -= 1;
+        head = head->next;
+    }
+    
+    return head;
+}
+
 void link_pop_node(Link *link, size_t index, void *value) {
     if (link->head == NULL) {
         return;
@@ -111,14 +122,22 @@ void link_destroy(Link *link) {
     }
 }
 
+void link_set_node_value(Link *link, LinkNode *node, void *value) {
+    memcpy(node->value, value, link->item_size);
+}
+
 LinkIterator link_iterator_create(Link *link) {
     return (LinkIterator) { .current = link->head };
 }
 
 void *link_iterator_next(LinkIterator *link_iterator) {
-    void *value = link_iterator->current->value;
+    LinkNode *node = link_iterator->current;
+
+    if (node == NULL) {
+        return NULL;
+    }
 
     link_iterator->current = link_iterator->current->next;
 
-    return value;
+    return node->value;
 }
