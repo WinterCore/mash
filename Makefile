@@ -3,7 +3,7 @@ CFLAGS = -std=c11 -Wall -Wextra
 
 .PHONY: clean debug all
 
-release: CFLAGS += -DNDEBUG
+release: CFLAGS += -DNDEBUG -O3
 release: Out
 
 debug: CFLAGS += -ggdb -O0 -DDEBUG

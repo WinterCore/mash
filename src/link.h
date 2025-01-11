@@ -2,6 +2,7 @@
 #define LINK_H
 #include <stdio.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 typedef struct LinkNode {
     struct LinkNode *next;
@@ -24,6 +25,7 @@ void link_pop_node(Link *link, size_t index, void *value);
 void link_delete_node(Link *link, size_t index);
 void link_destroy(Link *link);
 void link_set_node_value(Link *link, LinkNode *node, void *value);
+bool link_is_empty(Link *link);
 
 typedef struct LinkIterator {
     LinkNode *current;

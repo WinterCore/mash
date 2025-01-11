@@ -9,7 +9,7 @@ typedef struct Mash {
     size_t buckets_count;
     size_t num_elements;
 
-    Link *buckets[];
+    Link **buckets;
 } Mash;
 
 typedef struct MashElement {
@@ -21,5 +21,7 @@ Mash *mash_create(size_t elem_size);
 
 void mash_set(Mash *mash, char *key, void *value);
 void *mash_get(Mash *mash, char *key);
+void mash_delete(Mash *mash, char *key);
+void mash_debug(Mash *mash, void (*print_value)(void *));
 
 #endif

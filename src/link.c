@@ -1,13 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
+
 #include "./link.h"
+#include "aids.h"
 
 Link *link_create(size_t item_size) {
     Link *link = malloc(sizeof(Link));
 
     if (link == NULL) {
-        perror("Out of memory");
-        exit(EXIT_FAILURE);
+        PANIC("Out of memory");
     }
 
     link->head = NULL;
@@ -110,6 +111,13 @@ void link_delete_node(Link *link, size_t index) {
     link_pop_node(link, index, NULL);
 }
 
+bool link_is_empty(Link *link) {
+    if (link->head == NULL || link->tail == NULL) {
+        return true;
+    }
+    
+    return false;
+}
 
 void link_destroy(Link *link) {
     LinkNode *head = link->head;
@@ -120,6 +128,8 @@ void link_destroy(Link *link) {
 
         head = next;
     }
+
+    free(link);
 }
 
 void link_set_node_value(Link *link, LinkNode *node, void *value) {
